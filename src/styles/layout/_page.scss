@@ -1,0 +1,8 @@
+// Description: Page layout
+//
+// This file contains all the styles for the page layout.
+.page {
+	display: flex;
+	flex: 1 0 auto;
+	flex-direction: column;
+}

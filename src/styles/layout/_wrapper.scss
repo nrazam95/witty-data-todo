@@ -1,0 +1,23 @@
+//
+//  Wrapper
+//
+
+@use 'sass:map';
+
+.wrapper {
+	display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+	transition: $transition-base;
+
+    // Content
+    &.wrapper-content {
+        padding: map.get($content, padding-y) map.get($content, padding-x);
+    }
+
+	// Right Panel
+	&.wrapper-right-panel-active {
+		width: calc(100% - #{$offcanvas-horizontal-width});
+	}
+}

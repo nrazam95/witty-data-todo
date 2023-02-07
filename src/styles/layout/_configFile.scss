@@ -1,0 +1,55 @@
+$grid-gutter-width: 1.5rem !default;
+$transition-base: all 0.3s ease-in-out !default;
+$spacer: 1rem !default;
+$white: #fff !default;
+$dark-body-bg: #1e1e2f !default;
+$dark: #000 !default;
+$gray-100: #88c2fc !default;
+$box-shadow: 0 0.5rem 1rem rgba($dark, 0.15) !default;
+
+$offcanvas-horizontal-width: 20rem !default;
+$zindex-sticky: 1020 !default;
+$header: (
+	height: 6rem,
+	background-color: $white,
+	dark-background-color: shade-color($dark-body-bg, 70%),
+	color: #808191,
+	color-dark: $dark,
+	opacity: 0.5,
+	blur: 0.5rem,
+	border-size: 1px,
+	border-color: $gray-100,
+	box-shadow: $box-shadow,
+	padding-y: 0,
+	padding-x: $grid-gutter-width * 0.5,
+	dropdown: (
+		width: 15rem,
+		border-radius: 1.5rem,
+	),
+	mobile: (
+		height: 5rem,
+		blur: 0.5rem,
+		color: null,
+		dark-color: null,
+		background-color: #fff,
+		dark-background-color: shade-color($dark-body-bg, 70%),
+		opacity: 0.7,
+		left: (
+			background-color: $white,
+			dark-background-color: shade-color($dark-body-bg, 70%),
+			opacity: 0.9,
+		),
+		right: (
+			opacity: 0.9,
+		),
+	),
+) !default;
+
+$content: (
+	padding-y: 0,
+	padding-x: 0,
+) !default;
+
+$page: (
+	padding-y: $grid-gutter-width,
+) !default;

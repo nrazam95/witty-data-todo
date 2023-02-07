@@ -1,0 +1,19 @@
+
+@use 'sass:map';
+@use 'sass:math';
+
+.header {
+    position: sticky;
+	z-index: $zindex-sticky;
+	top: 0;
+	display: flex;
+	height: map.get($header, height);
+	align-items: center;
+	border-bottom: map.get($header, border-size) solid map.get($header, border-color);
+	background-color: rgba(map.get($header, background-color), map.get($header, opacity));
+	color: if(
+		map.get($header, color),
+		map.get($header, color),
+		color-contrast(map.get($header, background-color), map.get($header, color-dark))
+	);
+}
