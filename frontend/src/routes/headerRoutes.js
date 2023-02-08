@@ -2,6 +2,10 @@ import DefaultHeader from "../pages/layout/headers/DefaultHeader"
 
 const headers = [
     {
+        path: '/',
+        element: <DefaultHeader />,
+    },
+    {
         path: '/signin',
         element: null,
     },

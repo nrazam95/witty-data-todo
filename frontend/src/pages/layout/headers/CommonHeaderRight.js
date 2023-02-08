@@ -1,13 +1,32 @@
 import { Button } from "antd";
-import React from "react";
+import React, { useContext } from "react";
 import Avatar from "../../../components/Avatar";
 import ProfileModal from "../../../components/ProfileModal";
+import * as authActions from "../../../lib/actions/auth-actions";
+import { useDispatch } from "react-redux";
+import AuthContext from "../../../contexts/authContexts";
+import { useSelector } from "react-redux";
+
 const CommonHeaderRight = () => {
+    const { setToken } = useContext(AuthContext);
+    const { token } = useSelector(state => state.auth);
+    const dispatch = useDispatch();
     const [openModal, setOpenModal] = React.useState(false);
 
     const showModal = () => {
         setOpenModal(true);
     }
+
+    const onSigninOut = () => {
+        dispatch(authActions.logout())
+        setOpenModal(false);
+
+        if (token) {
+            setToken('');
+            window.location.reload();
+        }
+    }
+
     const profile = {
         name: 'John Doe',
         src: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
@@ -45,6 +64,7 @@ const CommonHeaderRight = () => {
                         openModal={openModal}
                         onOk={() => setOpenModal(false)}
                         onCancel={() => setOpenModal(false)}
+                        onSigninOut={onSigninOut}
                     />
 				</div>
 			</div>

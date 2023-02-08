@@ -1,74 +1,48 @@
-import Koa from 'koa';
-import Router from 'koa-router';
-import bodyParser from 'koa-bodyparser';
-import cors from '@koa/cors';
-import helmet from 'koa-helmet';
-import logger from 'koa-logger';
-import pg from 'pg';
-import dotenv from 'dotenv';
-import fs from 'fs';
-import path from 'path';
-import jwt from 'koa-jwt';
-import serve from 'koa-static';
-import mount from 'koa-mount';
-import send from 'koa-send';
-import compress from 'koa-compress';
-import convert from 'koa-convert';
+var Koa = require('koa');
+var cors = require('@koa/cors');
+var helmet = require('koa-helmet');
+var logger = require('koa-logger');
+var pg = require('pg');
+var dotenv = require('dotenv');
+var jwt = require('koa-jwt');
+var mount = require('koa-mount');
+var compress = require('koa-compress');
+var convert = require('koa-convert');
 
-import { authRoutes } from './routes/auth/authRoutes.js';
-// import { profileRoutes } from './routes/profileRoutes';
-// import { todoRoutes } from './routes/todoRoutes';
-// import { errorHandler } from './middlewares/errorHandler';
-// import { notFoundHandler } from './middlewares/notFoundHandler';
+var authRouter = require('./routes/auth-routes');
+var userRouter = require('./routes/user-routes');
+var todoRouter = require('./routes/todo-routes');
 
 dotenv.config();
 
 const app = new Koa();
-const router = new Router();
 
-const isDev = process.env.NODE_ENV === 'development';
-const isProd = process.env.NODE_ENV === 'production';
-
-// const staticPath = path.join(__dirname, '../frontend/build');
-
-const pool = new pg.Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: isProd,
-});
-
-app.context.pool = pool;
-
-// app.use(errorHandler);
-
-// app.use(notFoundHandler);
-
+/* Allowing cross-origin resource sharing. */
 app.use(convert(cors()));
 
+/* Helmet is a collection of 12 smaller middleware functions that set HTTP response headers. */
 app.use(convert(helmet()));
 
+/* Logging the request and response. */
 app.use(convert(logger()));
 
-app.use(convert(bodyParser()));
+/* This is a middleware that checks for a valid JWT token in the request header. If the token is valid,
+the request is allowed to proceed. If the token is invalid, the request is rejected. */
+app.use(convert(jwt({ secret: process.env.JWT_SECRET }).unless({ path: [
+    /^\/api\/auth/,
+    /^\/api\/my-profile\/stream-profile-picture/
+] })));
 
-app.use(convert(jwt({ secret: process.env.JWT_SECRET }).unless({ path: [/^\/api\/auth/] })));
-
+/* Compressing the response body. */
 app.use(convert(compress()));
 
-app.use(convert(mount('/', authRoutes.routes())));
+/* Mounting the authRouter at the root path. */
+app.use(convert(mount('/', authRouter.routes())));
 
-// app.use(convert(mount('/api/profile', profileRoutes.routes())));
+/* Mounting the userRouter at the root path. */
+app.use(convert(mount('/', userRouter.routes())));
 
-// app.use(convert(mount('/api/todo', todoRoutes.routes())));
+/* Mounting the todoRouter at the root path. */
+app.use(convert(mount('/', todoRouter.routes())));
 
-app.use(async (ctx, next) => {
-    if (ctx.status === 404 && ctx.path.indexOf('/api') !== 0) {
-        await send(ctx, 'index.html', { root: staticPath });
-    }
-    await next();
-});
-
-app.use(async ctx => {
-  ctx.body = 'Hello World';
-});
-console.log('Server is running on port 3000');
-app.listen(3000);
+module.exports = app;

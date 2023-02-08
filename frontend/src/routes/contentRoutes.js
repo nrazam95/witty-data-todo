@@ -7,6 +7,10 @@ const Login = lazy(() => import('../pages/auth/Login'));
 
 const auths = [
     {
+        path: '/',
+        element: <Todos />,
+    },
+    {
         path: '/signin',
         element: <Login />,
     },

@@ -1,14 +1,20 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useContext, useEffect, useLayoutEffect } from "react";
+import AuthContext from "../../contexts/authContexts";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const PageWrapper = forwardRef(({ isProtected, title, description, className, children }, ref) => {
-    // useEffect(() => {
-    //     if (isProtected && user === '') {
-    //         navigate(`../${demoPagesMenu.login.path}`);
-    //     }
-    //     return () => {};
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps
-    // }, []);
+    const { token } = useContext(AuthContext);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (isProtected && !token) {
+            navigate('/signin');
+        }
+        return () => {};
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
     
     return (
         <div 

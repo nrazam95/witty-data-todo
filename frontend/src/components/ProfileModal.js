@@ -8,6 +8,7 @@ const ProfileModal = ({
     openModal,
     onOk,
     onCancel,
+    onSigninOut,
     ...props
 }) => {
     const profile = {
@@ -63,8 +64,9 @@ const ProfileModal = ({
                               type="secondary"
                               size="large"
                               className="login-form-button"
+                              onClick={onSigninOut}
                             >
-                              <a href="/signout">Sign Out</a>
+                              Sign Out
                             </Button>
                         </div>
             </Card>
@@ -76,12 +78,14 @@ ProfileModal.propTypes = {
     openModal: PropTypes.bool,
     onOk: PropTypes.func,
     onCancel: PropTypes.func,
+    onSigninOut: PropTypes.func,
 }
 
 ProfileModal.defaultProps = {
     openModal: false,
     onOk: () => {},
     onCancel: () => {},
+    onSigninOut: () => {},
 }
 
 export default ProfileModal;
