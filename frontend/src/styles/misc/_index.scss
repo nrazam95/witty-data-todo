@@ -200,22 +200,22 @@
     align-items: center;
 }
 
-:where(.css-dev-only-do-not-override-1acleue).ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload.ant-upload-select {
-    width: unset;
-    height: unset;
-    border-radius: 200px;
-}
+// :where(.css-dev-only-do-not-override-1acleue).ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload.ant-upload-select {
+//     width: unset;
+//     height: unset;
+//     border-radius: 200px;
+// }
 
 .position-absolute-profile-text-1 {
     position: absolute;
     top: 20px;
-    right: 80px;
+    right: 60px;
 }
 
 .position-absolute-profile-text-2 {
     position: absolute;
     top: 50px;
-    right: 80px;
+    right: 55px;
 }
 
 .position-absolute-profile-text-3 {
@@ -248,4 +248,32 @@
 
 .align-items-flex-end {
     place-content: flex-end;
+}
+
+.user-profile__name {
+    font-size: 2rem;
+    font-weight: 500;
+    line-height: 1.2;
+    color: #212529;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.user-profile-theme {
+    box-shadow: unset !important;
+}
+
+.remove-box-shadow {
+    box-shadow: unset !important;
+}
+
+:where(.css-dev-only-do-not-override-d0rqya).ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload.ant-upload-select, :where(.css-dev-only-do-not-override-d0rqya).ant-upload-wrapper.ant-upload-picture-circle-wrapper .ant-upload.ant-upload-select {
+    width: 300px;
+    height: 300px;
+    border-radius: 200px;
+}
+
+.d-flex-no {
+    display: unset !important;
 }

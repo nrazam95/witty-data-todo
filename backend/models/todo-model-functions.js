@@ -21,23 +21,24 @@ const todo = function () {
 
     /* It's a function that finds a todo by id. */
     this.find = function (pool, id) {
-        return db.query(pool, 'SELECT * FROM todos WHERE id = $1', [id]);
+        return db.query(pool, `SELECT id, todo, TO_CHAR("dueAt", 'DD-MM-YYYY HH24:MI:SS') AS "dueAt", TO_CHAR("createdAt", 'DD-MM-YYYY HH24:MI:SS') AS "createdAt", (SELECT json_build_object('id', users.id,'name', users.name,'username', users.username) FROM users WHERE users.id = todos."userId") AS "user" FROM todos WHERE id = $1`, [id]);
     };
 
     /* It's a function that finds all todos owned by a user. */
     this.findAllOwned = function (pool, userId) {
-        return db.query(pool, 'SELECT * FROM todos WHERE "userId" = $1', [userId]);
+        return db.query(pool, `SELECT id, todo, TO_CHAR("dueAt", 'DD-MM-YYYY HH24:MI:SS') AS "dueAt", TO_CHAR("createdAt", 'DD-MM-YYYY HH24:MI:SS') AS "createdAt", (SELECT json_build_object('id', users.id,'name', users.name,'username', users.username) FROM users WHERE users.id = todos."userId") AS "user" FROM todos WHERE "userId" = $1`, [userId]);
     };
 
     /* It's a function that finds todos by filter. */
     this.findByFilter = function (pool, query) {
+        console.log(query.todo);
         let { userId, dueAt, todo, page, limit } = query;
         let whereClause = '';
         let values = [];
         let offset = 0;
         let limitClause = '';
         if (userId) {
-            whereClause += '"userId" = $1';
+            whereClause += `"userId" = $${values.length + 1}`;
             values.push(userId);
         }
 
@@ -45,7 +46,7 @@ const todo = function () {
             if (whereClause) {
                 whereClause += ' AND ';
             }
-            whereClause += `To_CHAR("dueAt", 'DD-MM-YYYY') = $2`;
+            whereClause += `To_CHAR("dueAt", 'DD-MM-YYYY') = $${values.length + 1}`;
             values.push(dueAt);
         }
 
@@ -53,8 +54,8 @@ const todo = function () {
             if (whereClause) {
                 whereClause += ' AND ';
             }
-            whereClause += 'todo = $3';
-            values.push(todo);
+            whereClause += `lower(todo) LIKE lower($${values.length + 1})`;
+            values.push(`%${todo}%`);
         }
 
         if (page && limit) {

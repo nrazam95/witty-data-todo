@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Page from "../../layout/Page/Page";
 import PageWrapper from "../../layout/PageWrapper/PageWrapper";
 import { Card, Button, Form, Input, Checkbox } from "antd";
@@ -43,7 +43,7 @@ const Login = () => {
             <Page className='p-0'>
                 <div className="row h-100 align-items-center justify-content-center">
                     <div className='col-xl-4 col-lg-6 col-md-8 shadow-3d-container'>
-                      <Card className='shadow-3d-dark' data-tour='login-page'>
+                      <Card className='shadow-3d-dark remove-box-shadow' data-tour='login-page' bordered={false}>
                         <Logo 
                           width={400}
                           height={300}

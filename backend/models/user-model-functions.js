@@ -43,6 +43,10 @@ const user = function () {
         return db.query(pool, 'UPDATE users SET name = $1, username = $2, "encryptedPassword" = $3 WHERE id = $4', [data.name, data.username, data.encryptedPassword, id]);
     }
 
+    this.updatePassword = function (pool, id, encryptedPassword) {
+        return db.query(pool, 'UPDATE users SET "encryptedPassword" = $1 WHERE id = $2', [encryptedPassword, id]);
+    }
+
     /* Deleting the user. */
     this.delete = function (pool, id) {
         return db.query(pool, 'DELETE FROM users WHERE id = $1', [id]);

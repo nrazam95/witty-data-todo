@@ -1,13 +1,15 @@
 import { Button } from "antd";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Avatar from "../../../components/Avatar";
 import ProfileModal from "../../../components/ProfileModal";
 import * as authActions from "../../../lib/actions/auth-actions";
+import * as myProfileActions from "../../../lib/actions/my-profile-actions";
 import { useDispatch } from "react-redux";
 import AuthContext from "../../../contexts/authContexts";
 import { useSelector } from "react-redux";
 
 const CommonHeaderRight = () => {
+    const { myProfile } = useSelector(state => state.myProfile);
     const { setToken } = useContext(AuthContext);
     const { token } = useSelector(state => state.auth);
     const dispatch = useDispatch();
@@ -27,14 +29,10 @@ const CommonHeaderRight = () => {
         }
     }
 
-    const profile = {
-        name: 'John Doe',
-        src: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        srcSet: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        color: 'primary',
-        mail: 'jkanskjwnjksq',
-        phone: '123456789',
-    }
+    useEffect(() => {
+        dispatch(myProfileActions.getMyProfile());
+    }, [dispatch]);
+
     return (
         <>
             <div
@@ -44,7 +42,7 @@ const CommonHeaderRight = () => {
 				<div className='me-3'>
 					<div className='text-end'>
 						<div className='fw-bold fs-6 mb-0'>
-							{`Alex Stein`}
+							{myProfile?.name}
 						</div>
 					</div>
 				</div>
@@ -56,11 +54,12 @@ const CommonHeaderRight = () => {
                         style={{ padding: 0 }}
                     >
                         <Avatar
-                            {...profile}
+                            {...myProfile}
                             size={50}
                         />
                     </Button>
                     <ProfileModal
+                        profile={myProfile}
                         openModal={openModal}
                         onOk={() => setOpenModal(false)}
                         onCancel={() => setOpenModal(false)}

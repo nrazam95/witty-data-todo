@@ -35,7 +35,7 @@ AvatarGroup.defaultProps = {
 const Avatar = forwardRef(
     (
         {
-            src,
+            imageUrl,
             className,
             size,
             rounded,
@@ -53,7 +53,7 @@ const Avatar = forwardRef(
             <AndtdAvatar
                 {...props}
                 ref={ref}
-                src={src}
+                src={imageUrl}
                 className={`avatar ${className}`}
                 size={size}
                 shape={rounded}
@@ -69,7 +69,7 @@ const Avatar = forwardRef(
 
 Avatar.displayName = 'Avatar';
 Avatar.propTypes = {
-    src: PropTypes.string.isRequired,
+    imageUrl: PropTypes.string.isRequired,
     className: PropTypes.string,
     size: PropTypes.number,
     rounded: PropTypes.oneOf([
@@ -96,6 +96,7 @@ Avatar.propTypes = {
 }
 
 Avatar.defaultProps = {
+    imageUrl: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
     className: undefined,
     size: 128,
     rounded: 'circle',

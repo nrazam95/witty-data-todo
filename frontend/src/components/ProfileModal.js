@@ -5,42 +5,36 @@ import { Card, Button } from "antd";
 import Avatar from "./Avatar";
 
 const ProfileModal = ({
+    profile,
     openModal,
     onOk,
     onCancel,
     onSigninOut,
     ...props
 }) => {
-    const profile = {
-        name: 'John Doe',
-        src: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        srcSet: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-        color: 'primary',
-        mail: 'jkanskjwnjksq',
-        phone: '123456789',
-    }
     return (
         <Modal open={openModal} onOk={onOk} onCancel={onCancel} footer={[]}>
             <Card
                 {...props}
-                className="text-align-last-center"
+                bordered={false}
+                className="text-align-last-center remove-box-shadow"
                 cover={(<div>
                     <Avatar
-                        src={profile.src}
-                        color={profile.color}
+                        imageUrl={profile?.imageUrl}
+                        color="primary"
                         size={300}
                         rounded="circle"
                         border={2}
                         blur={false}
                         borderColor="primary"
-                        alt={profile.name}
+                        alt={profile?.name}
                     />
                 </div>)}
             >
                 <Card.Meta
                     title={
                         <h2 className="user-profile__name">
-                            {profile.name}
+                            {profile?.name}
                         </h2>
                     }
                     style={{ textAlign: 'center', marginBottom: '1rem' }}
@@ -75,6 +69,7 @@ const ProfileModal = ({
 }
 
 ProfileModal.propTypes = {
+    profile: PropTypes.object,
     openModal: PropTypes.bool,
     onOk: PropTypes.func,
     onCancel: PropTypes.func,
@@ -82,6 +77,7 @@ ProfileModal.propTypes = {
 }
 
 ProfileModal.defaultProps = {
+    profile: {},
     openModal: false,
     onOk: () => {},
     onCancel: () => {},

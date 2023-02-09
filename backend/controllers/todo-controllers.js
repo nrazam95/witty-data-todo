@@ -75,7 +75,6 @@ const findByFilter = async (ctx) => {
             page: query.page ?? 1,
             limit: query.limit ?? 10,
         });
-
             ctx.response.status = 200;
             ctx.response.body = {
                 message: 'Todos found',

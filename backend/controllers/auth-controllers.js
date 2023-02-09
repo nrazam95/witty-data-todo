@@ -82,13 +82,18 @@ const signUp = async (ctx) => {
         
         const newUser = await getUserByUsername(ctx.pool, username);
 
-        const token = await encryptJWT({ username: user.username });
+        const token = await encryptJWT({ username: newUser.rows[0].username });
         ctx.response.status = 200;
-        ctx.response.body = { message: 'User created', token: token, user: {
-            id: newUser.rows[0].id,
-            username: newUser.rows[0].username,
-            name: newUser.rows[0].name,
-        }};
+        ctx.response.body = { 
+            message: 'User created', 
+            token: token, 
+            user: {
+                id: newUser.rows[0].id,
+                username: newUser.rows[0].username,
+                name: newUser.rows[0].name,
+                imageUrl: newUser.rows[0].imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${newUser.rows[0].imageId}` : null
+            }
+        };
     } catch (err) {
         ctx.response.status = 500;
         ctx.response.body = { error: err.message };
@@ -147,6 +152,7 @@ const signIn = async (ctx) => {
             id: newUser.rows[0].id,
             username: newUser.rows[0].username,
             name: newUser.rows[0].name,
+            imageUrl: newUser.rows[0].imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${newUser.rows[0].imageId}` : null
         }};
     } catch (err) {
         ctx.response.status = 500;

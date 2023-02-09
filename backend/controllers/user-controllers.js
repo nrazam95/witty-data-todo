@@ -3,12 +3,14 @@ const fs = require('fs');
 const stream = require('stream');
 const mime = require('mime-types');
 const { encryptPassword } = require('../helpers/password-encryption');
+const { encryptJWT } = require('../helpers/jwt-encryption');
 
 /* Creating a new instance of the user model. */
 const {
     findOwned,
     updateImage,
     update,
+    updatePassword,
 } = new user();
 
 /**
@@ -26,10 +28,15 @@ const myProfile = async (ctx) => {
         if (rows.length > 0) {
             ctx.response.status = 200;
             ctx.response.body = {
-                user: rows[0]
+                user: {
+                    id: rows[0].id,
+                    name: rows[0].name,
+                    username: rows[0].username,
+                    imageUrl: rows[0].imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${rows[0].imageId}` : null
+                }
             }
         } else {
-            throw new Error('User not found');
+            throw new Error('Looks like it\'s not your problem, it\'s ours. Please refresh the page and try again.');
         }
     } catch (err) {
         ctx.response.status = 500;
@@ -44,16 +51,24 @@ const myProfile = async (ctx) => {
 const updateProfile = async (ctx) => {
     /* Updating the user's profile with the name provided in the request body */
     const { id } = ctx.state.user;
-    const { name } = ctx.request.body;
+    const { name, username } = ctx.request.body;
     try {
-        const { rows } = await update(ctx.pool, id, { name });
+        await update(ctx.pool, id, { name, username });
+        const { rows } = await findOwned(ctx.pool, id);
+        const token = await encryptJWT({ username: rows[0].username });
         if (rows.length > 0) {
             ctx.response.status = 200;
             ctx.response.body = {
-                user: rows[0]
+                token: token,
+                user: {
+                    id: rows[0].id,
+                    name: rows[0].name,
+                    username: rows[0].username,
+                    imageUrl: rows[0].imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${rows[0].imageId}` : null
+                }
             }
         } else {
-            throw new Error('User not found');
+            throw new Error('Looks like it\'s not your problem, it\'s ours. Please refresh the page and try again.');
         }
     } catch (err) {
         ctx.response.status = 500;
@@ -74,14 +89,20 @@ const changePassword = async (ctx) => {
     const { password } = ctx.request.body;
     try {
         const encryptedPassword = await encryptPassword(password);
-        const { rows } = await update(ctx.pool, id, { encryptedPassword });
+        await updatePassword(ctx.pool, id, encryptedPassword);
+        const { rows } = await findOwned(ctx.pool, id);
         if (rows.length > 0) {
             ctx.response.status = 200;
             ctx.response.body = {
-                user: rows[0]
+                user: {
+                    id: rows[0].id,
+                    name: rows[0].name,
+                    username: rows[0].username,
+                    imageUrl: rows[0].imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${rows[0].imageId}` : null
+                }
             }
         } else {
-            throw new Error('User not found');
+            throw new Error('Looks like it\'s not your problem, it\'s ours. Please refresh the page and try again.');
         }
     } catch (err) {
         ctx.response.status = 500;
@@ -102,10 +123,19 @@ const uploadProfilePicture = async (ctx) => {
     try {
         const { id } = ctx.state.user;
         await updateImage(ctx.pool, id, ctx.file.filename);
-        
-        ctx.response.status = 200;
-        ctx.response.body = {
-            message: 'Image uploaded successfully'
+        const { rows } = await findOwned(ctx.pool, id);
+        if (rows.length > 0) {
+            ctx.response.status = 200;
+            ctx.response.body = {
+                user: {
+                    id: rows[0].id,
+                    name: rows[0].name,
+                    username: rows[0].username,
+                    imageUrl: rows[0].imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${rows[0].imageId}` : null
+                }
+            }
+        } else {
+            throw new Error('Looks like it\'s not your problem, it\'s ours. Please refresh the page and try again.');
         }
     } catch (err) {
         ctx.response.status = 500;
