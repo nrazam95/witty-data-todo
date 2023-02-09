@@ -1,32 +1,40 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Button, Pagination, Table, Popconfirm } from "antd";
+import { Button, Pagination, Table, Popconfirm, Card, message } from "antd";
 import PageWrapper from "../../layout/PageWrapper/PageWrapper";
 import Page from "../../layout/Page/Page";
 import { Space, Input, Row, Col } from "antd";
 import Logo from "../../components/Logo";
 import ProfileModal from "../../components/ProfileModal";
 import TodoCreateModal from "../../components/TodoCreateModal";
+import TodoUpdateModal from "../../components/TodoUpdateModal";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import * as authActions from "../../lib/actions/auth-actions";
 import AuthContext from "../../contexts/authContexts";
 import * as todoActions from "../../lib/actions/todo-actions";
 import * as moment from "moment";
+import { Navigate, useParams } from "react-router-dom";
+import SharedTodoModal from "../../components/SharedTodoModal";
+import { useNavigate } from "react-router-dom";
 
 const Todos = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { todoId } = useParams();
   const [todo, setTodo] = useState({
     todo: "",
     dueDate: "",
     dueTime: "",
   });
   const [search, setSearch] = useState("");
+  const [openModalSharedTodo, setOpenModalSharedTodo] = useState(false);
   const [visibleProfile, setVisibleProfile] = useState(false);
   const [visibleTodo, setVisibleTodo] = useState(false);
+  const [visibleUpdateTodo, setVisibleUpdateTodo] = useState(false);
   const { myProfile } = useSelector((state) => state.myProfile);
   const { token } = useSelector((state) => state.auth);
   const { setToken } = useContext(AuthContext);
-  const { todos, pagination } = useSelector((state) => state.todo);
+  const { todos, pagination, todoShared } = useSelector((state) => state.todo);
 
   const onSigninOut = () => {
     dispatch(authActions.logout());
@@ -84,14 +92,78 @@ const Todos = () => {
       page: pagination?.page,
       limit: pagination?.limit,
     }));
+
+    setTodo({
+      todo: "",
+      dueDate: "",
+      dueTime: "",
+    });
   };
+
+  const handleUpdateTodo = () => {
+    setVisibleUpdateTodo(false);
+
+    if (!todo.todo || !todo.dueDate || !todo.dueTime) {
+      return;
+    }
+
+    const payload = {
+      todo: todo.todo,
+      dueAt: moment(moment(todo.dueDate, "DD-MM-YYYY").format("YYYY-MM-DD") + " " + todo.dueTime).format("YYYY-MM-DDTHH:mm:ss.SSS[Z]"),
+    }
+
+    dispatch(todoActions.updateTodo(todo.id, payload));
+
+    setTodo({
+      todo: "",
+      dueDate: "",
+      dueTime: "",
+    });
+  }
+
+  const handleOnCancel = () => {
+    setVisibleTodo(false);
+    setVisibleUpdateTodo(false);
+    setTodo({
+      todo: "",
+      dueDate: "",
+      dueTime: "",
+    });
+  };
+
+  const handleUpdateData = (record) => {
+    setTodo({
+      id: record.id,
+      todo: record.todo,
+      dueDate: record.dueAt.split(" ")[0],
+      dueTime: record.dueAt.split(" ")[1],
+    });
+    setVisibleUpdateTodo(true);
+  };
+
+  const handleCopyLink = (record) => {
+    navigator.clipboard.writeText(record?.linkToShare);
+    message.success("Link copied to clipboard");
+  }
+
+  const handleOnCancelSharedTodo = () => {
+    setOpenModalSharedTodo(false);
+    dispatch(todoActions.deleteSharedTodoAfterView())
+
+    navigate("../");  
+  }
 
   useEffect(() => {
     dispatch(todoActions.getTodosByFilter({
       page: 1,
       limit: 10,
     }));
-  }, [dispatch]);
+
+    if (todoId) {
+      dispatch(todoActions.getSharedTodo(todoId));
+      setOpenModalSharedTodo(true);
+    }
+  }, [dispatch, todoId]);
 
   const columns = [
     {
@@ -126,30 +198,43 @@ const Todos = () => {
       render: (_, record) => 
         (
           <Space>
-            <Popconfirm title="Sure to share?" onConfirm={() => console.log("hello")}>
+            <Popconfirm title={
+                (
+                  <div>
+                    <Card>
+                      <Card.Meta
+                        title="Share Link"
+                        description={
+                          (
+                            <div style={{
+                              backgroundColor: "rgb(212 228 252)",
+                              padding: "10px",
+                              borderRadius: "5px",
+                              boxShadow: "0 0 5px 0 rgb(0 0 0 / 20%)",
+                            }}>
+                              <p>{record?.linkToShare}</p>
+                            </div>
+                          )
+                        }
+                      />
+                    </Card>
+                  </div>
+                )
+              } 
+              onConfirm={() => handleCopyLink(record)}
+            >
               <Button 
-                success
                 type="submit"
               >
                 Share
               </Button>
             </Popconfirm>
-            <Popconfirm title="Sure to update?" onConfirm={() => showModalTodo()}>
+            <Popconfirm title="Sure to update?" onConfirm={() => handleUpdateData(record)}>
               <Button 
                 type="primary"
-                info
               >
                 Update
               </Button>
-              <TodoCreateModal
-                visible={visibleTodo}
-                onCreate={handleCreateTodo}
-                onCancel={() => {
-                  setVisibleTodo(false);
-                }}
-                todo={todo}
-                setTodo={setTodo}
-              />
             </Popconfirm>
             <Popconfirm title="Sure to delete?" onConfirm={() => onDeleteTodo(record.id)}>
               <Button
@@ -239,6 +324,18 @@ const Todos = () => {
             />
           </div>
         </div>
+        <TodoUpdateModal
+                openModal={visibleUpdateTodo}
+                handleUpdateTodo={handleUpdateTodo}
+                onCancel={handleOnCancel}
+                todo={todo}
+                setTodo={setTodo}
+              />
+              <SharedTodoModal
+                openModal={openModalSharedTodo}
+                todo={todoShared}
+                onCancel={handleOnCancelSharedTodo}
+                />
       </Page>
     </PageWrapper>
   );

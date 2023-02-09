@@ -20,6 +20,10 @@ const headers = [
     {
         path: '/todo',
         element: <DefaultHeader />,
+    },
+    {
+        path: '/share/:todoId',
+        element: <DefaultHeader />,
     }
 ]
 

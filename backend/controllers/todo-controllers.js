@@ -9,6 +9,7 @@ const {
     update: updateTodo, 
     findTodoByIdAndUserId,
     findByFilter: findTodosByFilter,
+    findOneShared: findShared,
 } = new todo();
 
 /**
@@ -79,7 +80,10 @@ const findByFilter = async (ctx) => {
             ctx.response.body = {
                 message: 'Todos found',
                 data: {
-                    todos: rows,
+                    todos: rows.map((row) => ({
+                        ...row,
+                        linkToShare: `${process.env.FRONTEND_URL}/share/${row.id}`,
+                    })),
                     pagination: {
                         page: query.page || 1,
                         limit: query.limit || 10,
@@ -149,9 +153,15 @@ const update = async (ctx) => {
             todo: body.todo,
             dueAt: body.dueAt,
         });
+
+        const updatedTodo = await findTodo(ctx.pool, todoId);
         ctx.response.status = 200;
         ctx.response.body = {
             message: 'Todo updated successfully',
+            todo: {
+                ...updatedTodo.rows[0],
+                linkToShare: `${process.env.FRONTEND_URL}/share/${todoId}`,
+            },
         };
     } catch (err) {
         ctx.response.status = 404;
@@ -181,6 +191,36 @@ const isOwner = async (ctx, next) => {
     }
 }
 
+const findOneShareTodo = async (ctx) => {
+    const { todoId } = ctx.params;
+    try {
+        const { rows } = await findShared(ctx.pool, todoId);
+        if (rows.length > 0) {
+            ctx.response.status = 200;
+            ctx.response.body = {
+                message: 'Todo found',
+                todo: {
+                    id: rows[0].id,
+                    todo: rows[0].todo,
+                    dueAt: rows[0].dueAt,
+                    createdAt: rows[0].createdAt,
+                    user: {
+                        id: rows[0]?.user?.id,
+                        name: rows[0]?.user?.name,
+                        username: rows[0]?.user?.username,
+                        imageUrl: rows[0]?.user?.imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${rows[0]?.user?.imageId}` : null,
+                    },
+                },
+            };
+        } else {
+            throw new Error('Todo not found');
+        }
+    } catch (err) {
+        ctx.response.status = 404;
+        ctx.response.body = { error: err.message };
+    }
+};
+
 module.exports = {
     create,
     find,
@@ -189,4 +229,5 @@ module.exports = {
     remove,
     update,
     isOwner,
+    findOneShareTodo,
 };

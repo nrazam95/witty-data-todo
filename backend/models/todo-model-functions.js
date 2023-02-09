@@ -24,6 +24,10 @@ const todo = function () {
         return db.query(pool, `SELECT id, todo, TO_CHAR("dueAt", 'DD-MM-YYYY HH24:MI:SS') AS "dueAt", TO_CHAR("createdAt", 'DD-MM-YYYY HH24:MI:SS') AS "createdAt", (SELECT json_build_object('id', users.id,'name', users.name,'username', users.username) FROM users WHERE users.id = todos."userId") AS "user" FROM todos WHERE id = $1`, [id]);
     };
 
+    this.findOneShared = function (pool, id) {
+        return db.query(pool, `SELECT id, todo, TO_CHAR("dueAt", 'DD-MM-YYYY HH24:MI:SS') AS "dueAt", TO_CHAR("createdAt", 'DD-MM-YYYY HH24:MI:SS') AS "createdAt", (SELECT json_build_object('id', users.id,'name', users.name,'username', users.username,'imageId', users."imageId") FROM users WHERE users.id = todos."userId") AS "user" FROM todos WHERE id = $1`, [id]);
+    };
+
     /* It's a function that finds all todos owned by a user. */
     this.findAllOwned = function (pool, userId) {
         return db.query(pool, `SELECT id, todo, TO_CHAR("dueAt", 'DD-MM-YYYY HH24:MI:SS') AS "dueAt", TO_CHAR("createdAt", 'DD-MM-YYYY HH24:MI:SS') AS "createdAt", (SELECT json_build_object('id', users.id,'name', users.name,'username', users.username) FROM users WHERE users.id = todos."userId") AS "user" FROM todos WHERE "userId" = $1`, [userId]);

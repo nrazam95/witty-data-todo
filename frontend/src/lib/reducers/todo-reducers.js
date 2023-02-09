@@ -9,9 +9,13 @@ import {
     UPDATE_TODO_FAIL,
     DELETE_TODO_SUCCESS,
     DELETE_TODO_FAIL,
+    GET_SHARED_TODO_SUCCESS,
+    GET_SHARED_TODO_FAIL,
+    DELETE_SHARED_TODO_SUCCESS,
 } from "../actions/types";
 
 const initialState = {
+    todoShared: {},
     todos: [],
     pagination: {
         page: 1,
@@ -33,6 +37,7 @@ export default function todos(state = initialState, action) {
                     dueAt: todo?.dueAt,
                     createdBy: todo?.user?.name,
                     createdAt: todo?.createdAt,
+                    linkToShare: todo?.linkToShare,
                 })),
                 pagination: payload.pagination,
             };
@@ -62,7 +67,11 @@ export default function todos(state = initialState, action) {
                 ...state,
                 todos: state.todos.map((todo) => {
                     if (todo.id === payload.id) {
-                        return payload;
+                        return {
+                            ...todo,
+                            todo: payload.todo,
+                            dueAt: payload.dueAt,
+                        }
                     }
                     return todo;
                 }),
@@ -79,6 +88,20 @@ export default function todos(state = initialState, action) {
         case DELETE_TODO_FAIL:
             return {
                 ...state,
+            };
+        case GET_SHARED_TODO_SUCCESS:
+            return {
+                ...state,
+                todoShared: payload.todo,
+            };
+        case GET_SHARED_TODO_FAIL:
+            return {
+                ...state,
+            };
+        case DELETE_SHARED_TODO_SUCCESS:
+            return {
+                ...state,
+                todoShared: {},
             };
         default:
             return state;

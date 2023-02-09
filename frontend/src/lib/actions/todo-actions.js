@@ -9,6 +9,9 @@ import {
     UPDATE_TODO_FAIL,
     DELETE_TODO_SUCCESS,
     DELETE_TODO_FAIL,
+    GET_SHARED_TODO_SUCCESS,
+    GET_SHARED_TODO_FAIL,
+    DELETE_SHARED_TODO_SUCCESS,
 } from "../actions/types";
 import TodoService from "../services/todo-service";
 import { notification } from "antd";
@@ -79,12 +82,12 @@ export const createTodo = (todo) => async (dispatch) => {
     }
 }
 
-export const updateTodo = (todo) => async (dispatch) => {
+export const updateTodo = (id, todo) => async (dispatch) => {
     try {
-        const response = await TodoService.updateTodo(todo);
+        const response = await TodoService.updateTodo(id, todo);
         dispatch({
             type: UPDATE_TODO_SUCCESS,
-            payload: response.data,
+            payload: response.data.todo,
         });
         notification.success({
             message: "Todo updated successfully!",
@@ -124,5 +127,41 @@ export const deleteTodo = (id) => async (dispatch) => {
         notification.error({
             message: "Error deleting todo!",
         });
+    }
+}
+
+export const getSharedTodo = (id) => async (dispatch) => {
+    try {
+        const response = await TodoService.findShared(id);
+        dispatch({
+            type: GET_SHARED_TODO_SUCCESS,
+            payload: {
+                todo: response.data.todo,
+            },
+        });
+    } catch (error) {
+        if (error.response.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+        }
+        dispatch({
+            type: GET_SHARED_TODO_FAIL,
+        });
+    }
+}
+
+export const deleteSharedTodoAfterView = () => async (dispatch) => {
+    try {
+        dispatch({
+            type: DELETE_SHARED_TODO_SUCCESS,
+            payload: {
+                todo: {}
+            }
+        });
+    } catch (error) {
+        if (error.response.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+        }
     }
 }

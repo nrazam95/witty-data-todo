@@ -3,17 +3,18 @@ import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
 
-const TodoCreateModal = ({
+const TodoUpdateModal = ({
   todo,
   setTodo,
-  handleCreateTodo,
+  handleUpdateTodo,
   openModal,
   onOk,
   onCancel,
 }) => {
+    console.log(todo)
   return (
     <Modal
-      title="Create Todo"
+      title={`Update Todo: [ID: ${todo?.id}]`}
       open={openModal}
       onOk={onOk}
       onCancel={onCancel}
@@ -44,6 +45,7 @@ const TodoCreateModal = ({
             format={"DD-MM-YYYY"}
             value={todo?.dueDate ? moment(todo?.dueDate, "DD-MM-YYYY") : moment("01-01-2021", "DD-MM-YYYY")}
             onChange={(date, dateString) => {
+                console.log(date)
               setTodo({
                 ...todo,
                 dueDate: dateString,
@@ -83,31 +85,31 @@ const TodoCreateModal = ({
             width: "-webkit-fill-available",
           }}
           size="large"
-          onClick={handleCreateTodo}
+          onClick={handleUpdateTodo}
         >
-          Create
+          Update
         </Button>
       </div>
     </Modal>
   );
 };
 
-TodoCreateModal.propTypes = {
+TodoUpdateModal.propTypes = {
   todo: PropTypes.object.isRequired,
   setTodo: PropTypes.func.isRequired,
-  handleCreateTodo: PropTypes.func.isRequired,
+  handleUpdateTodo: PropTypes.func.isRequired,
   openModal: PropTypes.bool,
   onOk: PropTypes.func,
   onCancel: PropTypes.func,
 };
 
-TodoCreateModal.defaultProps = {
+TodoUpdateModal.defaultProps = {
   todo: {},
   setTodo: () => {},
-  handleCreateTodo: () => {},
+  handleUpdateTodo: () => {},
   openModal: false,
   onOk: () => {},
   onCancel: () => {},
 };
 
-export default TodoCreateModal;
+export default TodoUpdateModal;

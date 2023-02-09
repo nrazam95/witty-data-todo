@@ -11,6 +11,7 @@ todoRouter.get('/api/todos', koaBody(), authController.addIDatUserContext, todoC
 todoRouter.post('/api/todos', koaBody(), authController.addIDatUserContext, todoControllers.create);
 todoRouter.put('/api/todos/:todoId', koaBody(), authController.addIDatUserContext, todoControllers.isOwner, todoControllers.update);
 todoRouter.delete('/api/todos/:todoId', koaBody(), authController.addIDatUserContext, todoControllers.isOwner, todoControllers.remove);
+todoRouter.get('/api/todos/share/:todoId', koaBody(), todoControllers.findOneShareTodo);
 
 module.exports = {
     routes () {

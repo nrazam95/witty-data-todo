@@ -5,7 +5,12 @@ const Page404 = () => {
     return (
         <div>
             <h1>Page 404</h1>
-            <Button type="primary">Button</Button>
+            <Button 
+                type="primary"
+                href='/'
+            >
+                Button
+            </Button>
         </div>
     );
 };

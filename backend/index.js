@@ -30,7 +30,8 @@ app.use(convert(logger()));
 the request is allowed to proceed. If the token is invalid, the request is rejected. */
 app.use(convert(jwt({ secret: process.env.JWT_SECRET }).unless({ path: [
     /^\/api\/auth/,
-    /^\/api\/my-profile\/stream-profile-picture/
+    /^\/api\/my-profile\/stream-profile-picture/,
+    /^\/api\/todos\/share/,
 ] })));
 
 /* Compressing the response body. */

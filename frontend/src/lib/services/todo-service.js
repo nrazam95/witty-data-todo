@@ -27,6 +27,10 @@ const deleteTodo = (id) => {
   return axios.delete(API_URL + id, { headers: authHeader() });
 };
 
+const findShared = (id) => {
+  return axios.get(API_URL + "share/" + id, { headers: authHeader() });
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     getAllTodos,
@@ -35,4 +39,5 @@ export default {
     createTodo,
     updateTodo,
     deleteTodo,
+    findShared,
 };
