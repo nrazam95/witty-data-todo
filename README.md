@@ -34,7 +34,17 @@ git clone $REPO_URL
 sh run-local.sh
 ```
 
-### 4. Run the app (Backend)
+### 4. Set your database;
+***Make sure you have a database running on port 5432***
+***Make a database called "witty_data_todo"***
+***Make sure you have a user called "witty_data_todo" with password "postgres"***
+***Perform migrations***
+```bash
+cd backend
+npm run migrate:up
+```
+
+### 5. Run the app (Backend)
 ```bash
 cd backend
 nvm use 18
@@ -42,7 +52,8 @@ npm install
 npm run watch
 ```
 
-### 5. Run the app (Frontend)
+
+### 6. Run the app (Frontend)
 ```bash
 cd frontend
 nvm use 18
