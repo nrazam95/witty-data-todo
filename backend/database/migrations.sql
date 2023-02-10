@@ -15,7 +15,7 @@ CREATE TABLE "todos" (
   "dueAt" timestamp,
   "userId" integer NOT NULL REFERENCES "users" ON DELETE cascade,
   "isPublic" boolean DEFAULT false,
-  "shareUUID" uuid DEFAULT uuid_generate_v4(),
+  "sharingId" uuid DEFAULT uuid_generate_v4(),
   "createdAt" timestamp DEFAULT current_timestamp NOT NULL
 );
 CREATE INDEX "todos_userId_index" ON "todos" ("userId");

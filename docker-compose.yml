@@ -8,9 +8,9 @@ services:
     #   context: ./backend/database
     #   dockerfile: Dockerfile
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=witty-data-todo 
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
@@ -37,21 +37,21 @@ services:
     depends_on:
       - db
     environment:
-      - NODE_ENV=development
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_HOST=db
-      - DB_PORT=5432
-      - DB_NAME=witty-data-todo
-      - DATABASE_URL=postgres://postgres:postgres@localhost:5432/witty-data-todo?sslmode=disable
-      - JWT_SECRET=secret
-      - FRONTEND_URL=http://localhost:8080
-      - FRONTEND_HOST=localhost
-      - FRONTEND_PORT=8080
-      - BACKEND_URL=http://localhost:3000
-      - BACKEND_HOST=localhost
-      - BACKEND_PORT=3000
-      - PORT=3000
+      - NODE_ENV=${NODE_ENV}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
+      - JWT_SECRET=${JWT_SECRET}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - FRONTEND_HOST=${FRONTEND_HOST}
+      - FRONTEND_PORT=${FRONTEND_PORT}
+      - BACKEND_URL=${BACKEND_URL}
+      - BACKEND_HOST=${BACKEND_HOST}
+      - BACKEND_PORT=${BACKEND_PORT}
+      - PORT=${PORT}
     volumes:
       - /app/node_modules
       - ./backend:/app

@@ -1,6 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
+.env
 backend/node_modules
 frontend/node_modules
 /.pnp
@@ -16,7 +17,6 @@ frontend/build
 frontend/.DS_Store
 frontend/.env
 frontend/.env.local
-frontend/.env.development
 frontend/.env.development.local
 frontend/.env.test.local
 frontend/.env.production.local
@@ -25,6 +25,7 @@ frontend/npm-debug.log*
 frontend/yarn-debug.log*
 frontend/yarn-error.log*
 frontend/*.json
+frontend/package-lock.json
 
 backend/.DS_Store
 backend/.env.local
