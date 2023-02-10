@@ -1,7 +1,3 @@
 /backend/node_modules
-/backend/coverage
-/backend/uploads
-/backend/.env
-/backend/.env.example
 
 /frontend/node_modules

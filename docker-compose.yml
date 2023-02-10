@@ -2,31 +2,26 @@ version: '3.9'
 
 services:
   db:
-    image: postgres
+    image: postgres:14.1-alpine
     restart: always
     # build: 
-    #   context: ./backend/db
+    #   context: ./backend/database
     #   dockerfile: Dockerfile
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
-      - POSTGRES_DB=witty-data-todo
-      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_DB=witty-data-todo 
     ports:
-      - 5432:5432
-    networks:
-      - example-network
+      - "5432:5432"
     volumes:
-      - ./backend/db:/docker-entrypoint-initdb.d
+      - ./backend/database/migrations.sql:/docker-entrypoint-initdb.d/migrations.sql
   frontend:
     build: 
       context: ./frontend
       dockerfile: Dockerfile
     restart: always
     ports:
-      - 8080:80
-    networks:
-      - example-network
+      - "8080:80"
     volumes:
       - /app/node_modules
       - ./frontend:/app
@@ -38,17 +33,17 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - 3000:3000
+      - "3000:3000"
     depends_on:
       - db
     environment:
       - NODE_ENV=development
       - DB_USER=postgres
       - DB_PASSWORD=postgres
-      - DB_HOST=localhost
+      - DB_HOST=db
       - DB_PORT=5432
       - DB_NAME=witty-data-todo
-      - DATABASE_URL=postgres://postgres:postgres@localhost:5432/witty-data-todo
+      - DATABASE_URL=postgres://postgres:postgres@localhost:5432/witty-data-todo?sslmode=disable
       - JWT_SECRET=secret
       - FRONTEND_URL=http://localhost:8080
       - FRONTEND_HOST=localhost
@@ -56,8 +51,19 @@ services:
       - BACKEND_URL=http://localhost:3000
       - BACKEND_HOST=localhost
       - BACKEND_PORT=3000
-    networks:
-      - example-network
+      - PORT=3000
+    volumes:
+      - /app/node_modules
+      - ./backend:/app
+  pgadmin-compose:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "placeholder@example.com"
+      PGADMIN_DEFAULT_PASSWORD: "fakepassword123!"
+    ports:
+      - "16543:80"
+    depends_on:
+      - db
   # nginx:
   #   container_name: nginx
   #   hostname: nginx
@@ -79,6 +85,3 @@ services:
   #     - ./nginx/logs:/var/log/nginx
   #     - ./frontend/dist:/usr/share/nginx/html
   #     - ./backend/dist:/usr/share/nginx/html/api
-networks:
-  example-network:
-    driver: bridge

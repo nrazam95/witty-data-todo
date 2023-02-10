@@ -3,4 +3,4 @@
 # docker exec -it witty-data-todo psql -U postgres -c "CREATE DATABASE witty-data-todo;"
 # create access privileges for the user postgres
 # docker exec -it witty-data-todo psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE witty-data-todo TO postgres;"
-docker compose up db -d
+docker compose up -d
