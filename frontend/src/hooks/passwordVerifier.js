@@ -38,3 +38,27 @@ export const matchingPasswords = ({ getFieldValue }) => ({
     return Promise.reject('The two passwords that you entered do not match!');
     },
 })
+
+export const usernameVerifier = ({ getFieldValue }) => ({
+    validator(rule, value) {
+      if (value.length < 6) {
+        return Promise.reject(
+          "Username must be at least 6 characters long"
+        );
+      }
+
+      if (value.length > 30) {
+        return Promise.reject(
+          "Username must be less than 30 characters long"
+        );
+      }
+
+      if (!value.match(/^[a-zA-Z0-9]+$/)) {
+        return Promise.reject(
+          "Username can only contain letters and numbers"
+        );
+      }
+
+      return Promise.resolve();
+    },
+  });

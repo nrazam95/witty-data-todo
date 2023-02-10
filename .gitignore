@@ -38,3 +38,5 @@ backend/*.json
 backend/coverage
 backend/uploads
 
+postgres-data
+

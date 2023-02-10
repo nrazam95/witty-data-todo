@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AuthContext from "../../contexts/authContexts";
-import { matchingPasswords, passwordVerifier } from "../../hooks/passwordVerifier";
+import { matchingPasswords, passwordVerifier, usernameVerifier } from "../../hooks/passwordVerifier";
 
 const SignUp = () => {
   const { setToken } = useContext(AuthContext);
@@ -58,6 +58,7 @@ const SignUp = () => {
                 name="username"
                 rules={[
                   { required: true, message: "Please input your Username!" },
+                  usernameVerifier,
                 ]}
               >
                 <Input

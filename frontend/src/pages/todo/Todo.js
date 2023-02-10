@@ -13,7 +13,7 @@ import * as authActions from "../../lib/actions/auth-actions";
 import AuthContext from "../../contexts/authContexts";
 import * as todoActions from "../../lib/actions/todo-actions";
 import * as moment from "moment";
-import { Navigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import SharedTodoModal from "../../components/SharedTodoModal";
 import { useNavigate } from "react-router-dom";
 
