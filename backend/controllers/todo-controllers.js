@@ -10,6 +10,10 @@ const {
     findTodoByIdAndUserId,
     findByFilter: findTodosByFilter,
     findOneShared: findShared,
+    updateIsPublic,
+    findShareIsPublic,
+    findShareIsOwned,
+    findAllPublicByFilter,
 } = new todo();
 
 /**
@@ -80,10 +84,7 @@ const findByFilter = async (ctx) => {
             ctx.response.body = {
                 message: 'Todos found',
                 data: {
-                    todos: rows.map((row) => ({
-                        ...row,
-                        linkToShare: `${process.env.FRONTEND_URL}/share/${row.id}`,
-                    })),
+                    todos: rows,
                     pagination: {
                         page: query.page || 1,
                         limit: query.limit || 10,
@@ -158,10 +159,7 @@ const update = async (ctx) => {
         ctx.response.status = 200;
         ctx.response.body = {
             message: 'Todo updated successfully',
-            todo: {
-                ...updatedTodo.rows[0],
-                linkToShare: `${process.env.FRONTEND_URL}/share/${todoId}`,
-            },
+            todo: updatedTodo.rows[0],
         };
     } catch (err) {
         ctx.response.status = 404;
@@ -192,29 +190,128 @@ const isOwner = async (ctx, next) => {
 }
 
 const findOneShareTodo = async (ctx) => {
-    const { todoId } = ctx.params;
+    const { id } = ctx.state.user;
+    console.log(id);
+    const { todoId, sharingId } = ctx.request.query;
     try {
-        const { rows } = await findShared(ctx.pool, todoId);
-        if (rows.length > 0) {
-            ctx.response.status = 200;
-            ctx.response.body = {
-                message: 'Todo found',
-                todo: {
-                    id: rows[0].id,
-                    todo: rows[0].todo,
-                    dueAt: rows[0].dueAt,
-                    createdAt: rows[0].createdAt,
-                    user: {
-                        id: rows[0]?.user?.id,
-                        name: rows[0]?.user?.name,
-                        username: rows[0]?.user?.username,
-                        imageUrl: rows[0]?.user?.imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${rows[0]?.user?.imageId}` : null,
-                    },
-                },
-            };
-        } else {
-            throw new Error('Todo not found');
+        if (todoId && sharingId && id) {
+            const { rows } = await findShareIsOwned(ctx.pool, todoId, id);
+            if (rows.length > 0) {
+                const { rows } = await findShared(ctx.pool, todoId);
+                if (rows.length > 0) {
+                    ctx.response.status = 200;
+                    ctx.response.body = {
+                        message: 'Todo found',
+                        todo: rows[0],
+                    };
+                } else {
+                    throw new Error('Todo not found');
+                }
+            } else {
+                const { rows } = await findShared(ctx.pool, todoId);
+                if (rows.length > 0) {
+                    ctx.response.status = 200;
+                    ctx.response.body = {
+                        message: 'Todo found',
+                        todo: rows[0],
+                    };
+                } else {
+                    throw new Error('Todo not found');
+                }
+            }
         }
+
+        if (todoId && !sharingId && id) {
+            const { rows } = await findShareIsOwned(ctx.pool, todoId, id);
+            if (rows.length > 0) {
+                const { rows } = await findShared(ctx.pool, todoId);
+                if (rows.length > 0) {
+                    ctx.response.status = 200;
+                    ctx.response.body = {
+                        message: 'Todo found',
+                        todo: rows[0],
+                    };
+                } else {
+                    throw new Error('Todo not found');
+                }
+            } else {
+                const { rows } = await findShareIsPublic(ctx.pool, todoId);
+                if (rows.length > 0) {
+                    const { rows } = await findShared(ctx.pool, todoId);
+                    if (rows.length > 0) {
+                        ctx.response.status = 200;
+                        ctx.response.body = {
+                            message: 'Todo found',
+                            todo: rows[0],
+                        };
+                    } else {
+                        throw new Error('Todo not found');
+                    }
+                } else {
+                    throw new Error('Not Public');
+                }
+            }
+        }
+
+        if (todoId && id) {
+            const { rows } = await findShareIsOwned(ctx.pool, todoId, id);
+            if (rows.length > 0) {
+                const { rows } = await findShared(ctx.pool, todoId);
+                if (rows.length > 0) {
+                    ctx.response.status = 200;
+                    ctx.response.body = {
+                        message: 'Todo found',
+                        todo: rows[0],
+                    };
+                } else {
+                    throw new Error('Todo not found');
+                }
+            } else {
+                throw new Error('This is not your todo');
+            }
+        }
+    } catch (err) {
+        ctx.response.status = 404;
+        ctx.response.body = { error: err.message };
+    }
+};
+
+const updatePublicity = async (ctx) => {
+    const { todoId } = ctx.params;
+    const { body } = ctx.request;
+    try {
+        await updateIsPublic(ctx.pool, todoId, body.public);
+        const updatedTodo = await findTodo(ctx.pool, todoId);
+        ctx.response.status = 200;
+        ctx.response.body = {
+            message: 'You have successfully updated the publicity of this todo',
+            todo: updatedTodo.rows[0],
+        };
+    } catch (err) {
+        ctx.response.status = 404;
+        ctx.response.body = { error: err.message };
+    }
+};
+
+const findPublicTodos = async (ctx) => {
+    const { query } = ctx.request;
+    try {
+        const { rows } = await findAllPublicByFilter(ctx.pool, {
+            page: query.page ?? 1,
+            limit: query.limit ?? 5,
+        });
+        ctx.response.status = 200;
+        ctx.response.body = {
+            message: 'Todos found',
+            data: {
+                todos: rows,
+                pagination: {
+                    page: query.page || 1,
+                    limit: query.limit || 10,
+                    total: rows.length,
+                },
+            }
+        };
     } catch (err) {
         ctx.response.status = 404;
         ctx.response.body = { error: err.message };
@@ -230,4 +327,6 @@ module.exports = {
     update,
     isOwner,
     findOneShareTodo,
+    updatePublicity,
+    findPublicTodos,
 };

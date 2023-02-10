@@ -23,6 +23,10 @@ const user = function () {
         return db.query(pool, 'SELECT * FROM users WHERE username = $1', [username]);
     }
 
+    this.getUserByUsernameNoPassword = function (pool, username) {
+        return db.query(pool, `SELECT id, name, username, CONCAT('${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/' || users."imageId") AS "imageUrl" FROM users WHERE username = $1`, [username]);
+    }
+
     /* A function that is being returned. */
     this.find = function (pool, id) {
         return db.query(pool, 'SELECT * FROM users WHERE id = $1', [id]);
@@ -30,7 +34,7 @@ const user = function () {
 
     /* Returning the user that is being found. */
     this.findOwned = function (pool, id) {
-        return db.query(pool, 'SELECT * FROM users WHERE id = $1', [id]);
+        return db.query(pool, `SELECT id, name, username, CONCAT('${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/' || users."imageId") AS "imageUrl" FROM users WHERE id = $1`, [id]);
     }
 
     /* Returning all the users. */

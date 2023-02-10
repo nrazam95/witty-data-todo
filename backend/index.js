@@ -31,7 +31,7 @@ the request is allowed to proceed. If the token is invalid, the request is rejec
 app.use(convert(jwt({ secret: process.env.JWT_SECRET }).unless({ path: [
     /^\/api\/auth/,
     /^\/api\/my-profile\/stream-profile-picture/,
-    /^\/api\/todos\/share/,
+    /^\/api\/public/,
 ] })));
 
 /* Compressing the response body. */

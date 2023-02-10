@@ -10,6 +10,7 @@ const user = require('../models/user-model-functions');
 const {
     createUser,
     getUserByUsername,
+    getUserByUsernameNoPassword,
 } = new user();
 
 /**
@@ -83,16 +84,13 @@ const signUp = async (ctx) => {
         const newUser = await getUserByUsername(ctx.pool, username);
 
         const token = await encryptJWT({ username: newUser.rows[0].username });
+
+        const { rows } = await getUserByUsernameNoPassword(ctx.pool, username);
         ctx.response.status = 200;
         ctx.response.body = { 
             message: 'User created', 
             token: token, 
-            user: {
-                id: newUser.rows[0].id,
-                username: newUser.rows[0].username,
-                name: newUser.rows[0].name,
-                imageUrl: newUser.rows[0].imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${newUser.rows[0].imageId}` : null
-            }
+            user: rows[0]
         };
     } catch (err) {
         ctx.response.status = 500;
@@ -141,19 +139,14 @@ const signIn = async (ctx) => {
         const user = rows[0];
         const res = await comparePassword(password, user.encryptedPassword);
         if (!res) {
-            throw new Error(error);
+            throw new Error('Password is incorrect');
         }
 
         const token = await encryptJWT({ username: user.username });
-        const newUser = await getUserByUsername(ctx.pool, username);
+        const newUser = await getUserByUsernameNoPassword(ctx.pool, username);
 
         ctx.response.status = 200;
-        ctx.response.body = { message: 'User logged in', token: token, user: {
-            id: newUser.rows[0].id,
-            username: newUser.rows[0].username,
-            name: newUser.rows[0].name,
-            imageUrl: newUser.rows[0].imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${newUser.rows[0].imageId}` : null
-        }};
+        ctx.response.body = { message: 'User logged in', token: token, user: newUser.rows[0] };
     } catch (err) {
         ctx.response.status = 500;
         ctx.response.body = { error: err.message };

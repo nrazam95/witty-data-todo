@@ -24,6 +24,16 @@ exports.up = pgm => {
             notNull: true,
             default: pgm.func('current_timestamp'),
         },
+        isPublic: {
+            type: 'boolean',
+            notNull: true,
+            default: false,
+        },
+        sharingId: {
+            type: "uuid",
+            notNull: false,
+            default: pgm.func('uuid_generate_v4 ()'),
+        },
     });
     pgm.createIndex('todos', 'userId');
 };

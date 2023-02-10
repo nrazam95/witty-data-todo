@@ -2,6 +2,8 @@ import { Form, Input, Modal, Button, DatePicker, TimePicker } from "antd";
 import React from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 
 const TodoUpdateModal = ({
   todo,
@@ -11,7 +13,21 @@ const TodoUpdateModal = ({
   onOk,
   onCancel,
 }) => {
-    console.log(todo)
+    dayjs.extend(customParseFormat);
+    const handleTimeChange = (time, timeString) => {
+      console.log(time, timeString);
+        setTodo({
+            ...todo,
+            dueTime: timeString,
+        });
+    }
+
+    const handleDateChange = (date, dateString) => {
+        setTodo({
+            ...todo,
+            dueDate: dateString,
+        });
+    }
   return (
     <Modal
       title={`Update Todo: [ID: ${todo?.id}]`}
@@ -43,14 +59,12 @@ const TodoUpdateModal = ({
             }}
             size="large"
             format={"DD-MM-YYYY"}
-            value={todo?.dueDate ? moment(todo?.dueDate, "DD-MM-YYYY") : moment("01-01-2021", "DD-MM-YYYY")}
+            defaultValue={todo.dueDate ? dayjs(todo.dueDate, "DD-MM-YYYY") : dayjs(moment(), "DD-MM-YYYY")}
             onChange={(date, dateString) => {
-                console.log(date)
-              setTodo({
-                ...todo,
-                dueDate: dateString,
-              });
+              handleDateChange(date, dateString)
             }}
+            clearIcon={false}
+            getPopupContainer={(trigger) => trigger.parentNode}
           />
         </Form.Item>
         <Form.Item label="Expected Due Time">
@@ -60,12 +74,9 @@ const TodoUpdateModal = ({
               minWidth: "-webkit-fill-available",
             }}
             size="large"
-            value={todo?.dueTime ? moment(todo?.dueTime, "HH:mm:ss") : moment("00:00:00", "HH:mm:ss")}
+            defaultValue={todo.dueTime ? dayjs(todo.dueTime, "HH:mm:ss") : dayjs("00:00:00", "HH:mm:ss")}
             onChange={(time, timeString) => {
-              setTodo({
-                ...todo,
-                dueTime: timeString,
-              });
+              handleTimeChange(time, timeString);
             }}
           />
         </Form.Item>

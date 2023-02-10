@@ -1,7 +1,8 @@
 import { Form, Input, Modal, Button, DatePicker, TimePicker } from "antd";
 import React from "react";
 import PropTypes from "prop-types";
-import moment from "moment";
+import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
 
 const TodoCreateModal = ({
   todo,
@@ -11,6 +12,7 @@ const TodoCreateModal = ({
   onOk,
   onCancel,
 }) => {
+  dayjs.extend(customParseFormat);
   return (
     <Modal
       title="Create Todo"
@@ -42,7 +44,6 @@ const TodoCreateModal = ({
             }}
             size="large"
             format={"DD-MM-YYYY"}
-            value={todo?.dueDate ? moment(todo?.dueDate, "DD-MM-YYYY") : moment("01-01-2021", "DD-MM-YYYY")}
             onChange={(date, dateString) => {
               setTodo({
                 ...todo,
@@ -58,7 +59,6 @@ const TodoCreateModal = ({
               minWidth: "-webkit-fill-available",
             }}
             size="large"
-            value={todo?.dueTime ? moment(todo?.dueTime, "HH:mm:ss") : moment("00:00:00", "HH:mm:ss")}
             onChange={(time, timeString) => {
               setTodo({
                 ...todo,

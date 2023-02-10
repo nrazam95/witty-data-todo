@@ -28,12 +28,7 @@ const myProfile = async (ctx) => {
         if (rows.length > 0) {
             ctx.response.status = 200;
             ctx.response.body = {
-                user: {
-                    id: rows[0].id,
-                    name: rows[0].name,
-                    username: rows[0].username,
-                    imageUrl: rows[0].imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${rows[0].imageId}` : null
-                }
+                user: rows[0],
             }
         } else {
             throw new Error('Looks like it\'s not your problem, it\'s ours. Please refresh the page and try again.');
@@ -60,12 +55,7 @@ const updateProfile = async (ctx) => {
             ctx.response.status = 200;
             ctx.response.body = {
                 token: token,
-                user: {
-                    id: rows[0].id,
-                    name: rows[0].name,
-                    username: rows[0].username,
-                    imageUrl: rows[0].imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${rows[0].imageId}` : null
-                }
+                user: rows[0]
             }
         } else {
             throw new Error('Looks like it\'s not your problem, it\'s ours. Please refresh the page and try again.');
@@ -94,12 +84,7 @@ const changePassword = async (ctx) => {
         if (rows.length > 0) {
             ctx.response.status = 200;
             ctx.response.body = {
-                user: {
-                    id: rows[0].id,
-                    name: rows[0].name,
-                    username: rows[0].username,
-                    imageUrl: rows[0].imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${rows[0].imageId}` : null
-                }
+                user: rows[0]
             }
         } else {
             throw new Error('Looks like it\'s not your problem, it\'s ours. Please refresh the page and try again.');
@@ -127,12 +112,7 @@ const uploadProfilePicture = async (ctx) => {
         if (rows.length > 0) {
             ctx.response.status = 200;
             ctx.response.body = {
-                user: {
-                    id: rows[0].id,
-                    name: rows[0].name,
-                    username: rows[0].username,
-                    imageUrl: rows[0].imageId ? `${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/${rows[0].imageId}` : null
-                }
+                user: rows[0]
             }
         } else {
             throw new Error('Looks like it\'s not your problem, it\'s ours. Please refresh the page and try again.');

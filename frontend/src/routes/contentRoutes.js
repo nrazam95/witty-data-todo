@@ -27,7 +27,11 @@ const auths = [
         element: <Todos />,
     },
     {
-        path: '/share/:todoId',
+        path: '/share/:todoId/:sharingId',
+        element: <Todos />,
+    },
+    {
+        path: '/share/:todoId/',
         element: <Todos />,
     }
 ]

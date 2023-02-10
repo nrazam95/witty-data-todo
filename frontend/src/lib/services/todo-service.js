@@ -1,34 +1,42 @@
 import axios from "axios";
 import authHeader from "../auth-header";
 
-const API_URL = "http://localhost:3000/api/todos/";
+const API_URL = process.env.REACT_APP_API_URL;
 
 const getAllTodos = () => {
-  return axios.get(API_URL + "all", { headers: authHeader() });
+  return axios.get(API_URL + "/api/todos/all", { headers: authHeader() });
 };
 
 const getTodo = (id) => {
-  return axios.get(API_URL + id, { headers: authHeader() });
+  return axios.get(API_URL + '/api/todos/' + id, { headers: authHeader() });
 };
 
 const getTodosByFilter = (filter) => {
-  return axios.get(API_URL, { headers: authHeader(), params: filter });
+  return axios.get(API_URL + '/api/todos/', { headers: authHeader(), params: filter });
 };
 
 const createTodo = (data) => {
-  return axios.post(API_URL, data, { headers: authHeader() });
+  return axios.post(API_URL + '/api/todos/', data, { headers: authHeader() });
 };
 
 const updateTodo = (id, data) => {
-  return axios.put(API_URL + id, data, { headers: authHeader() });
+  return axios.put(API_URL + '/api/todos/' +  id, data, { headers: authHeader() });
 };
 
 const deleteTodo = (id) => {
-  return axios.delete(API_URL + id, { headers: authHeader() });
+  return axios.delete(API_URL + '/api/todos/' + id, { headers: authHeader() });
 };
 
-const findShared = (id) => {
-  return axios.get(API_URL + "share/" + id, { headers: authHeader() });
+const findShared = (data) => {
+  return axios.get(API_URL + "/api/share/", { headers: authHeader(), params: data });
+};
+
+const updateIsPublic = (id, data) => {
+  return axios.put(API_URL + "/api/todos/public/" + id, data, { headers: authHeader() });
+};
+
+const findPublicTodos = () => {
+  return axios.get(API_URL + "/api/public-shared");
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -40,4 +48,6 @@ export default {
     updateTodo,
     deleteTodo,
     findShared,
+    updateIsPublic,
+    findPublicTodos,
 };

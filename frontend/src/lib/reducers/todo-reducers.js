@@ -12,12 +12,22 @@ import {
     GET_SHARED_TODO_SUCCESS,
     GET_SHARED_TODO_FAIL,
     DELETE_SHARED_TODO_SUCCESS,
+    UPDATE_PUBLICITY_SUCCESS,
+    UPDATE_PUBLICITY_FAIL,
+    GET_PUBLIC_TODOS_SUCCESS,
+    GET_PUBLIC_TODOS_FAIL,
 } from "../actions/types";
 
 const initialState = {
     todoShared: {},
     todos: [],
     pagination: {
+        page: 1,
+        limit: 10,
+        total: 0,
+    },
+    publicTodos: [],
+    publicPagination: {
         page: 1,
         limit: 10,
         total: 0,
@@ -38,6 +48,7 @@ export default function todos(state = initialState, action) {
                     createdBy: todo?.user?.name,
                     createdAt: todo?.createdAt,
                     linkToShare: todo?.linkToShare,
+                    isPublic: todo?.isPublic,
                 })),
                 pagination: payload.pagination,
             };
@@ -102,6 +113,43 @@ export default function todos(state = initialState, action) {
             return {
                 ...state,
                 todoShared: {},
+            };
+        case UPDATE_PUBLICITY_SUCCESS:
+            return {
+                ...state,
+                todos: state.todos.map((todo) => {
+                    if (todo.id === payload.id) {
+                        return {
+                            ...todo,
+                            isPublic: payload.isPublic,
+                        }
+                    }
+                    return todo;
+                }),
+                publicTodos: (() => {
+                    if (payload.isPublic) {
+                        return [
+                            ...state.publicTodos,
+                            payload,
+                        ];
+                    } else {
+                        return state.publicTodos.filter((todo) => todo.id !== payload.id);
+                    }
+                }) ()
+            };
+        case UPDATE_PUBLICITY_FAIL:
+            return {
+                ...state,
+            };
+        case GET_PUBLIC_TODOS_SUCCESS:
+            return {
+                ...state,
+                publicTodos: payload.todos,
+                publicPagination: payload.pagination,
+            };
+        case GET_PUBLIC_TODOS_FAIL:
+            return {
+                ...state,
             };
         default:
             return state;

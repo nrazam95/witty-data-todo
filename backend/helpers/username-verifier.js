@@ -17,10 +17,12 @@ const usernameVerifier = (username) => {
         return { status: false, error: 'Username must be less than 20 characters long' };
     }
 
-    // Username should only contain letters, numbers
-    /* It's checking if the username contains any characters that are not letters or numbers. */
-    if (!username.match(/^[a-zA-Z0-9]+$/)) {
-        return { status: false, error: 'Username can only contain letters and numbers' };
+    if (!username || /^\s/.test(username)) {
+        return { status: false, error: 'Username must not start with a space' };
+    }
+
+    if (!username || /\s/.test(username)) {
+        return { status: false, error: 'Username must not contain any spaces' };
     }
     
     return { status: true, error: '' };
