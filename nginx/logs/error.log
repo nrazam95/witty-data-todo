@@ -1,0 +1,10 @@
+2023/02/10 06:48:17 [emerg] 1#1: "upstream" directive is not allowed here in /etc/nginx/nginx.conf:1
+2023/02/10 06:48:17 [emerg] 1#1: "upstream" directive is not allowed here in /etc/nginx/nginx.conf:1
+2023/02/10 06:48:17 [emerg] 1#1: "upstream" directive is not allowed here in /etc/nginx/nginx.conf:1
+2023/02/10 06:48:18 [emerg] 1#1: "upstream" directive is not allowed here in /etc/nginx/nginx.conf:1
+2023/02/10 06:48:19 [emerg] 1#1: "upstream" directive is not allowed here in /etc/nginx/nginx.conf:1
+2023/02/10 06:48:21 [emerg] 1#1: "upstream" directive is not allowed here in /etc/nginx/nginx.conf:1
+2023/02/10 06:48:24 [emerg] 1#1: "upstream" directive is not allowed here in /etc/nginx/nginx.conf:1
+2023/02/10 06:48:31 [emerg] 1#1: "upstream" directive is not allowed here in /etc/nginx/nginx.conf:1
+2023/02/10 06:48:44 [emerg] 1#1: "upstream" directive is not allowed here in /etc/nginx/nginx.conf:1
+2023/02/10 06:49:10 [emerg] 1#1: "upstream" directive is not allowed here in /etc/nginx/nginx.conf:1
