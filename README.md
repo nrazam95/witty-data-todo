@@ -60,9 +60,9 @@ sh run-local.sh
 ```
 
 ### 4. Set your database;
-***Make sure you have a database running on port 5432***
-***Make a database called "witty_data_todo"***
-***Make sure you have a user called "witty_data_todo" with password "postgres"***
+***Make sure you have a database running on port 5432*** <br/>
+***Make a database called "witty_data_todo"*** <br/>
+***Make sure you have a user called "postgres" with password "postgres"*** <br/>
 ***Perform migrations***
 ```bash
 cd backend
