@@ -34,6 +34,7 @@ export const getTodosByFilter = (data) => async (dispatch) => {
                 pagination: response.data.data.pagination,
             },
         });
+        return new Promise.resolve();
     } catch (error) {
         if (error?.response?.status === 401) {
             localStorage.removeItem("token");
@@ -42,6 +43,7 @@ export const getTodosByFilter = (data) => async (dispatch) => {
         dispatch({
             type: GET_ALL_TODOS_FAIL,
         });
+        return new Promise.reject();
     }
 }
 
@@ -52,6 +54,7 @@ export const getTodo = (id) => async (dispatch) => {
             type: GET_TODO_SUCCESS,
             payload: response.data,
         });
+        return new Promise.resolve();
     } catch (error) {
         if (error.response.status === 401) {
             localStorage.removeItem("token");
@@ -60,6 +63,7 @@ export const getTodo = (id) => async (dispatch) => {
         dispatch({
             type: GET_TODO_FAIL,
         });
+        return new Promise.reject();
     }
 }
 
@@ -72,6 +76,7 @@ export const createTodo = (todo) => async (dispatch) => {
         notification.success({
             message: "Todo created successfully!",
         });
+        return new Promise.resolve();
     } catch (error) {
         if (error.response.status === 401) {
             localStorage.removeItem("token");
@@ -83,6 +88,7 @@ export const createTodo = (todo) => async (dispatch) => {
         notification.error({
             message: "Error creating todo!",
         });
+        return new Promise.reject();
     }
 }
 
@@ -96,6 +102,7 @@ export const updateTodo = (id, todo) => async (dispatch) => {
         notification.success({
             message: "Todo updated successfully!",
         });
+        return new Promise.resolve();
     } catch (error) {
         if (error.response.status === 401) {
             localStorage.removeItem("token");
@@ -107,6 +114,7 @@ export const updateTodo = (id, todo) => async (dispatch) => {
         notification.error({
             message: "Error updating todo!",
         });
+        return new Promise.reject();
     }
 }
 
@@ -120,6 +128,7 @@ export const deleteTodo = (id) => async (dispatch) => {
         notification.success({
             message: "Todo deleted successfully!",
         });
+        return new Promise.resolve();
     } catch (error) {
         if (error.response.status === 401) {
             localStorage.removeItem("token");
@@ -131,6 +140,7 @@ export const deleteTodo = (id) => async (dispatch) => {
         notification.error({
             message: "Error deleting todo!",
         });
+        return new Promise.reject();
     }
 }
 
@@ -165,11 +175,13 @@ export const deleteSharedTodoAfterView = () => async (dispatch) => {
                 todo: {}
             }
         });
+        return await Promise.resolve();
     } catch (error) {
         if (error.response.status === 401) {
             localStorage.removeItem("token");
             localStorage.removeItem("user");
         }
+        return await Promise.reject();
     }
 }
 
@@ -183,6 +195,7 @@ export const updatePublicity = (id, publicity) => async (dispatch) => {
         notification.success({
             message: "Todo updated successfully!",
         });
+        return new Promise.resolve();
     } catch (error) {
         if (error.response.status === 401) {
             localStorage.removeItem("token");
@@ -194,6 +207,7 @@ export const updatePublicity = (id, publicity) => async (dispatch) => {
         notification.error({
             message: "Error updating todo!",
         });
+        return new Promise.reject();
     }
 }
 
@@ -210,6 +224,7 @@ export const getPublicTodos = (data) => async (dispatch) => {
                 pagination: response.data.data.pagination,
             },
         });
+        return new Promise.resolve();
     } catch (error) {
         if (error.response.status === 401) {
             localStorage.removeItem("token");
@@ -218,5 +233,6 @@ export const getPublicTodos = (data) => async (dispatch) => {
         dispatch({
             type: GET_PUBLIC_TODOS_FAIL,
         });
+        return new Promise.reject();
     }
 }

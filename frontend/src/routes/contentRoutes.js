@@ -18,10 +18,16 @@ const auths = [
         path: '/signup',
         element: <SignUp />,
     },
+]
+
+const profile = [
     {
         path: '/profile',
         element: <Profile />,
     },
+]
+
+const todos = [
     {
         path: '/todo',
         element: <Todos />,
@@ -36,9 +42,10 @@ const auths = [
     }
 ]
 
-
 const contents = [
     ...auths,
+    ...profile,
+    ...todos,
 ]
 
 export default contents;

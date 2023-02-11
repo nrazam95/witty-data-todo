@@ -22,7 +22,7 @@ export const register = (username, password, confirmPassword) => async (dispatch
         }
 
         notification.open({
-            message: response.data.message,
+            message: response?.data?.message,
             description: 'Looks like you have successfully registered!',
             onClick: () => {
                 console.log('Notification Clicked!');
@@ -35,7 +35,7 @@ export const register = (username, password, confirmPassword) => async (dispatch
         });
 
         notification.open({
-            message: error.response.data.message,
+            message: error?.response?.data?.error,
             description: 'Looks like you have failed to register!',
             onClick: () => {
                 console.log('Notification Clicked!');
@@ -59,7 +59,7 @@ export const login = (username, password) => async (dispatch) => {
         }
 
         notification.open({
-            message: response.data.message,
+            message: response?.data?.message,
             description: 'Looks like you have successfully logged in!',
             onClick: () => {
                 console.log('Notification Clicked!');
@@ -72,7 +72,7 @@ export const login = (username, password) => async (dispatch) => {
         });
 
         notification.open({
-            message: error.response.data.message,
+            message: error?.response?.data?.error,
             description: 'Looks like you have failed to log in!',
             onClick: () => {
                 console.log('Notification Clicked!');
@@ -89,7 +89,7 @@ export const logout = () => async (dispatch) => {
             type: LOGOUT,
         });
         notification.open({
-            message: response.data.message,
+            message: response?.data?.message,
             description: 'Looks like you have successfully logged out!',
             onClick: () => {
                 console.log('Notification Clicked!');
@@ -101,7 +101,7 @@ export const logout = () => async (dispatch) => {
         return await Promise.resolve();
     } catch (error) {
         notification.open({
-            message: error.response.data.message,
+            message: error?.response?.data?.error,
             description: 'Looks like you have failed to log out!',
             onClick: () => {
                 console.log('Notification Clicked!');

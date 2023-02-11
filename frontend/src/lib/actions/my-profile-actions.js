@@ -95,7 +95,7 @@ export const updateMyPassword = (data) => (dispatch) => {
             });
             notification.open({
                 message: 'Password Update Failed',
-                description: 'Looks like you have failed to update your password!',
+                description: error?.response?.data?.error,
                 onClick: () => {
                     console.log('Notification Clicked!');
                 },
@@ -136,7 +136,7 @@ export const updateMyProfilePicture = (profilePicture) => (dispatch) => {
             });
             notification.open({
                 message: 'Profile Picture Update Failed',
-                description: 'Looks like you have failed to update your profile picture!',
+                description: error?.response?.data?.error,
                 onClick: () => {
                     console.log('Notification Clicked!');
                 },

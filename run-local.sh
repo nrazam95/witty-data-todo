@@ -6,7 +6,9 @@ rm -rf ./backend/.env
 rm -rf ./frontend/.env
 rm -rf .env
 rm -rf ./frontend/src/lib/axios.js
+rm -rf ./backend/uploads
 
+mkdir ./backend/uploads
 touch ./backend/.env
 cp ./backend/.env.development ./backend/.env
 
