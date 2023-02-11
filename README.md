@@ -20,9 +20,9 @@
 
 ## TODO 
 <!-- pictures from demo profile -->
-- [] Add a demo profile
-- [ ] Add a demo todo
-
+<img src="https://raw.githubusercontent.com/nrazam95/witty-data-todo/master/demo/demo1.png" width="100%" height="auto" />
+<img src="https://raw.githubusercontent.com/nrazam95/witty-data-todo/master/demo/demo2.png" width="100%" height="auto" />
+<img src="https://raw.githubusercontent.com/nrazam95/witty-data-todo/master/demo/demo3.png" width="100%" height="auto" />
 
 
 ## RUN THE APP WITH DOCKER
