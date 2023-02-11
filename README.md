@@ -1,4 +1,29 @@
 # WELCOME TO WITTY DATA TODO - PROJECT MANAGEMENT
+### This app is built with Node.js, KoaJs, React, Redux, PostgreSQL, Docker, Docker Compose, Ant Design, and more.
+
+|  |  |
+|--|--|
+| **Frontend** | [React](https://reactjs.org/) |
+| **Backend** | [KoaJs](https://koajs.com/) |
+| **Database** | [PostgreSQL](https://www.postgresql.org/) |
+| **UI Framework** | [Ant Design](https://ant.design/) |
+
+## FEATURES
+- [x] Create a todo
+- [x] Update a todo
+- [x] Delete a todo
+- [x] Share a todo
+- [x] Make a todo public
+- [x] Upload profile picture
+- [x] Update profile picture
+- [x] Change password
+
+## TODO 
+<!-- pictures from demo profile -->
+- [] Add a demo profile
+- [ ] Add a demo todo
+
+
 
 ## RUN THE APP WITH DOCKER
 
