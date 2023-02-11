@@ -18,7 +18,6 @@ var upload = multer({
             cb(null, newFileName);
         }
     })
-
 });
 
 /* A GET request to the route `/api/my-profile` that uses the `koaBody()` middleware, the
