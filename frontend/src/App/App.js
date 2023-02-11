@@ -22,7 +22,6 @@ const App = () => {
 				style={{
 					backgroundColor: 'var(--bs-body-bg)',
 					zIndex: 1 ,
-					overflow: 'scroll',
 				}}>
 				<Wrapper />
 			</div>

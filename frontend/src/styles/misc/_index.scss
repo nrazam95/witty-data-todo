@@ -200,11 +200,15 @@
     align-items: center;
 }
 
-// :where(.css-dev-only-do-not-override-1acleue).ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload.ant-upload-select {
-//     width: unset;
-//     height: unset;
-//     border-radius: 200px;
-// }
+:where(.css-dev-only-do-not-override-1acleue).ant-upload-wrapper.ant-upload-picture-card-wrapper .ant-upload.ant-upload-select {
+    width: unset;
+    height: unset;
+}
+
+:where(.css-d0rqya).ant-upload-wrapper.ant-upload-picture-circle-wrapper .ant-upload.ant-upload-select {
+    width: unset;
+    height: unset;
+}
 
 .position-absolute-profile-text-1 {
     position: absolute;

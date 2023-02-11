@@ -18,7 +18,7 @@ const todo = function () {
   this.create = function (pool, data) {
     return db.query(
       pool,
-      'INSERT INTO todos (todo, "dueAt", "userId") VALUES ($1, $2, $3)',
+      `INSERT INTO todos (todo, "dueAt", "userId") VALUES ($1, $2, $3) RETURNING id, todo, TO_CHAR("dueAt", 'DD-MM-YYYY HH24:MI:SS') AS "dueAt", TO_CHAR("createdAt", 'DD-MM-YYYY HH24:MI:SS') AS "createdAt", (SELECT json_build_object('id', users.id,'name', users.name,'username', users.username) FROM users WHERE users.id = todos."userId") AS "user", "isPublic"`,
       [data.todo, data.dueAt, data.userId]
     );
   };
@@ -103,12 +103,16 @@ const todo = function () {
 
     if (page && limit) {
       offset = (page - 1) * limit;
-      limitClause = `LIMIT ${limit} OFFSET ${offset}`;
+      limitClause = `LIMIT ${limit - 1} OFFSET ${offset}`;
     }
 
     if (whereClause) {
       whereClause = `WHERE ${whereClause}`;
     }
+
+    // Page size sql
+    // const limitClause = `LIMIT ${limit} OFFSET ${offset} COUNT(*) OVER() AS "totalRows"`;
+
 
     // Creating subquery for nested user query
     // const subQuery = `SELECT * FROM todos ${whereClause} ${limitClause}`;
@@ -116,8 +120,20 @@ const todo = function () {
     // const mainQuery = `SELECT * FROM todos AS todos LEFT JOIN users ON todos."userId" = users.id`;
 
     // Query nested User
-    const mainQuery = `SELECT id, todo, TO_CHAR("dueAt", 'DD-MM-YYYY HH24:MI:SS') AS "dueAt", TO_CHAR("createdAt", 'DD-MM-YYYY HH24:MI:SS') AS "createdAt", (SELECT json_build_object('id', users.id,'name', users.name,'username', users.username) FROM users WHERE users.id = todos."userId") AS "user", "isPublic", CONCAT( '${process.env.FRONTEND_URL}/share/' || todos.id || '/' || todos."sharingId") AS "linkToShare" FROM todos AS todos ${whereClause} ${limitClause}`;
-
+    // const querySentence = `SELECT id, todo, TO_CHAR("dueAt", 'DD-MM-YYYY HH24:MI:SS') AS "dueAt", TO_CHAR("createdAt", 'DD-MM-YYYY HH24:MI:SS') AS "createdAt", (SELECT json_build_object('id', users.id,'name', users.name,'username', users.username) FROM users WHERE users.id = todos."userId") AS "user", "isPublic", CONCAT( '${process.env.FRONTEND_URL}/share/' || todos.id || '/' || todos."sharingId") AS "linkToShare") FROM todos AS todos ${whereClause} ${limitClause}`;
+    
+    const mainQuery = `
+      SELECT COUNT(*) AS total, 
+        (
+          SELECT json_agg(todos)
+          FROM 
+          (
+            SELECT id, todo, TO_CHAR("dueAt", 'DD-MM-YYYY HH24:MI:SS') AS "dueAt", TO_CHAR("createdAt", 'DD-MM-YYYY HH24:MI:SS') AS "createdAt", (SELECT json_build_object('id', users.id,'name', users.name,'username', users.username) FROM users WHERE users.id = todos."userId") AS "user", "isPublic", CONCAT( '${process.env.FRONTEND_URL}/share/' || todos.id || '/' || todos."sharingId") AS "linkToShare"
+            FROM todos AS todos ${whereClause} ${limitClause}
+          ) AS todos
+        ) as todos
+      FROM todos
+    `;
     return db.query(pool, mainQuery, values);
   };
 
@@ -153,7 +169,20 @@ const todo = function () {
         limitClause = `LIMIT ${limit} OFFSET ${offset}`;
     }
 
-    const mainQuery = `SELECT id, todo, TO_CHAR("dueAt", 'DD-MM-YYYY HH24:MI:SS') AS "dueAt", TO_CHAR("createdAt", 'DD-MM-YYYY HH24:MI:SS') AS "createdAt", (SELECT json_build_object('id', users.id,'name', users.name,'username', users.username,'imageUrl', CONCAT('${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/' || users."imageId")) FROM users WHERE users.id = todos."userId") AS "user", "isPublic", CONCAT( '${process.env.FRONTEND_URL}/share/' || todos.id || '/' || todos."sharingId") AS "linkToShare" FROM todos AS todos WHERE "isPublic" = $1 ${limitClause}`;
+    // const mainQuery = `SELECT id, todo, TO_CHAR("dueAt", 'DD-MM-YYYY HH24:MI:SS') AS "dueAt", TO_CHAR("createdAt", 'DD-MM-YYYY HH24:MI:SS') AS "createdAt", (SELECT json_build_object('id', users.id,'name', users.name,'username', users.username,'imageUrl', CONCAT('${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/' || users."imageId")) FROM users WHERE users.id = todos."userId") AS "user", "isPublic", CONCAT( '${process.env.FRONTEND_URL}/share/' || todos.id || '/' || todos."sharingId") AS "linkToShare" FROM todos AS todos WHERE "isPublic" = $1 ${limitClause}`;
+
+    const mainQuery = `
+      SELECT COUNT(*) AS total,
+        (
+          SELECT json_agg(todos)
+          FROM
+          (
+            SELECT id, todo, TO_CHAR("dueAt", 'DD-MM-YYYY HH24:MI:SS') AS "dueAt", TO_CHAR("createdAt", 'DD-MM-YYYY HH24:MI:SS') AS "createdAt", (SELECT json_build_object('id', users.id,'name', users.name,'username', users.username,'imageUrl', CONCAT('${process.env.BACKEND_URL}/api/my-profile/stream-profile-picture/' || users."imageId")) FROM users WHERE users.id = todos."userId") AS "user", "isPublic", CONCAT( '${process.env.FRONTEND_URL}/share/' || todos.id || '/' || todos."sharingId") AS "linkToShare"
+            FROM todos AS todos WHERE "isPublic" = $1 ${limitClause}
+          ) AS todos
+        ) as todos
+      FROM todos
+    `;
 
     return db.query(pool, mainQuery, [true]);
   };

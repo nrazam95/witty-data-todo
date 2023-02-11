@@ -36,8 +36,8 @@ const updateIsPublic = (id, data) => {
   return axios.put(API_URL + "/api/todos/public/" + id, data, { headers: authHeader() });
 };
 
-const findPublicTodos = () => {
-  return axios.get(API_URL + "/api/public-shared");
+const findPublicTodos = (data) => {
+  return axios.get(API_URL + "/api/public-shared", { params: data });
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export

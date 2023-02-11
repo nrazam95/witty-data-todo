@@ -76,6 +76,7 @@ const Todos = () => {
   };
 
   const handleOnChangePage = (page, pageSize) => {
+    console.log(page, pageSize);
     dispatch(
       todoActions.getTodosByFilter({ page, limit: pageSize, todo: search })
     );
@@ -108,12 +109,6 @@ const Todos = () => {
     };
 
     dispatch(todoActions.createTodo(payload));
-    dispatch(
-      todoActions.getTodosByFilter({
-        page: pagination?.page,
-        limit: pagination?.limit,
-      })
-    );
 
     setTodo({
       todo: "",
@@ -185,13 +180,6 @@ const Todos = () => {
         public: value,
       })
     );
-
-    dispatch(
-      todoActions.getTodosByFilter({
-        page: pagination?.page,
-        limit: pagination?.limit,
-      })
-    );
   };
 
   const handleClickView = (record) => {
@@ -224,7 +212,7 @@ const Todos = () => {
     dispatch(
       todoActions.getPublicTodos({
         page: 1,
-        limit: 10,
+        limit: 5,
       })
     );
 
@@ -373,7 +361,7 @@ const Todos = () => {
               <Col span={12}>
                 <Space direction="vertical">
                   <Input
-                    placeholder="Basic usage"
+                    placeholder="Search Todo"
                     size="large"
                     onChange={handleSearch}
                   />
@@ -410,7 +398,7 @@ const Todos = () => {
             <Pagination
               total={pagination?.total}
               showTotal={(total) => `Total ${total} items`}
-              pageSizeOptions={[5, 10, 20, 50]}
+              pageSizeOptions={[5, 10, 20]}
               defaultPageSize={pagination?.limit}
               defaultCurrent={pagination?.page}
               style={{ textAlign: "center" }}
@@ -445,7 +433,8 @@ const Todos = () => {
                 showPublic && (
                   <PublicTodosList 
                     list={publicTodos}
-                    pageSize={pagination?.limit}
+                    pageSize={publicPagination?.limit}
+                    total={publicPagination?.total}
                     onChangePage={handleOnChangePagePublic}
                   />
                 )

@@ -25,7 +25,7 @@ const create = async (ctx) => {
     const { id } = ctx.state.user;
     const { body } = ctx.request;
     try {
-        await createTodo(ctx.pool, {
+        const { rows } = await createTodo(ctx.pool, {
             todo: body.todo,
             dueAt: body.dueAt,
             userId: id,
@@ -33,6 +33,7 @@ const create = async (ctx) => {
         ctx.response.status = 201;
         ctx.response.body = {
             message: 'Todo created successfully',
+            todo: rows[0],
         };
     } catch (err) {
         ctx.response.status = 500;
@@ -80,15 +81,17 @@ const findByFilter = async (ctx) => {
             page: query.page ?? 1,
             limit: query.limit ?? 10,
         });
+        console.log(rows);
             ctx.response.status = 200;
             ctx.response.body = {
                 message: 'Todos found',
                 data: {
-                    todos: rows,
+                    todos: rows[0].todos || [],
                     pagination: {
                         page: query.page || 1,
                         limit: query.limit || 10,
-                        total: rows.length,
+                        total: rows[0].total,
+                        totalPage: Math.ceil(rows[0].total / (query.limit || 10)),
                     },
                 }
             };
@@ -297,18 +300,19 @@ const findPublicTodos = async (ctx) => {
     const { query } = ctx.request;
     try {
         const { rows } = await findAllPublicByFilter(ctx.pool, {
-            page: query.page ?? 1,
-            limit: query.limit ?? 5,
+            page: Number(query.page) ?? 1,
+            limit: Number(query.limit) ?? 5,
         });
         ctx.response.status = 200;
         ctx.response.body = {
             message: 'Todos found',
             data: {
-                todos: rows,
+                todos: rows[0].todos || [],
                 pagination: {
-                    page: query.page || 1,
-                    limit: query.limit || 10,
-                    total: rows.length,
+                    page: Number(query.page) || 1,
+                    limit: Number(query.limit) || 5,
+                    total: Number(rows[0].total),
+                    totalPage: Math.ceil(Number(rows[0].total) / (Number(query.limit) || 5)),
                 },
             }
         };

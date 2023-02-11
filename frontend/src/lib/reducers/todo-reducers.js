@@ -29,7 +29,7 @@ const initialState = {
     publicTodos: [],
     publicPagination: {
         page: 1,
-        limit: 10,
+        limit: 5,
         total: 0,
     },
 };
@@ -68,6 +68,18 @@ export default function todos(state = initialState, action) {
         case CREATE_TODO_SUCCESS:
             return {
                 ...state,
+                todos: [
+                    ...state.todos,
+                    {
+                        id: payload?.id,
+                        todo: payload?.todo,
+                        dueAt: payload?.dueAt,
+                        createdBy: payload?.user?.name,
+                        createdAt: payload?.createdAt,
+                        linkToShare: payload?.linkToShare,
+                        isPublic: payload?.isPublic,
+                    },
+                ],
             };
         case CREATE_TODO_FAIL:
             return {

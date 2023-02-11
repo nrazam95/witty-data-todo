@@ -4,7 +4,7 @@ import { LikeOutlined, MessageOutlined, StarOutlined } from "@ant-design/icons";
 import { PropTypes } from "prop-types";
 import Avatar from "./Avatar";
 
-export const PublicTodosList = ({ list, pageSize, onChangePage, ...props }) => {
+export const PublicTodosList = ({ list, pageSize, total, onChangePage, ...props }) => {
   const IconText = ({ icon, text }) => (
     <Space>
       {React.createElement(icon)}
@@ -20,6 +20,11 @@ export const PublicTodosList = ({ list, pageSize, onChangePage, ...props }) => {
           onChangePage(page);
         },
         pageSize: pageSize,
+        pageSizeOptions: [5, 10, 20, 50],
+        total: total,
+        showTotal: (total, range) =>
+          `${range[0]}-${range[1]} of ${total} items`,
+
       }}
       dataSource={list}
       footer={
@@ -108,12 +113,14 @@ PublicTodosList.propTypes = {
       }).isRequired,
     })
   ).isRequired,
+  total: PropTypes.number.isRequired,
   pageSize: PropTypes.number.isRequired,
   onChangePage: PropTypes.func.isRequired,
 };
 
 PublicTodosList.defaultProps = {
   list: [],
-  pageSize: 10,
+  pageSize: 5,
+  total: 0,
   onChangePage: () => {},
 };

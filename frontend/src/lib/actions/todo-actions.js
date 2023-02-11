@@ -69,9 +69,10 @@ export const getTodo = (id) => async (dispatch) => {
 
 export const createTodo = (todo) => async (dispatch) => {
     try {
-        await TodoService.createTodo(todo);
+        const response = await TodoService.createTodo(todo);
         dispatch({
             type: CREATE_TODO_SUCCESS,
+            payload: response.data.todo,
         });
         notification.success({
             message: "Todo created successfully!",
